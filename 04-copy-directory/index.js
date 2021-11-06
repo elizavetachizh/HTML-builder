@@ -5,7 +5,7 @@ fs.mkdir(path.join(__dirname, "files-copy"), { recursive: true }, (err) => {
     console.error(err);
     return;
   } else {
-    console.log("Папка существует");
+    console.log("Данная папка существует");
   }
 });
 fs.readdir(path.join(__dirname, "files"), (err, files) => {
@@ -23,7 +23,7 @@ fs.readdir(path.join(__dirname, "files"), (err, files) => {
           console.error(err);
           return;
         }
-        console.log("Файл успешно копирован");
+        console.log("Файл из папки успешно скопирован");
       }
     );
   }

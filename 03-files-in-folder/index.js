@@ -21,7 +21,7 @@ fs.readdir(
               `${path.basename(
                 files[i].name,
                 path.extname(files[i].name)
-              )}\t  ${path.extname(files[i].name)}\t  ${stats.size}`
+              )}\t ${path.extname(files[i].name)}\t ${stats.size} B`
             );
           }
         );
