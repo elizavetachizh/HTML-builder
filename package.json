@@ -14,5 +14,9 @@
   "devDependencies": {
     "@types/node": "^16.11.4",
     "eslint": "^7.32.0"
+  },
+  "dependencies": {
+    "css-parser": "0.0.6",
+    "csv-parser": "^3.0.0"
   }
 }
