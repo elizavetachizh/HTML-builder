@@ -8,6 +8,7 @@ const {
   appendFile,
   copyFile,
 } = require("fs");
+
 mkdir(
   path.join(__dirname, "project-dist"),
   { recursive: true },
@@ -18,6 +19,7 @@ mkdir(
     }
   }
 );
+
 let dataTemplate = createReadStream(
   path.join(__dirname, "template.html"),
   "utf-8"
@@ -25,24 +27,23 @@ let dataTemplate = createReadStream(
 readdir(path.join(__dirname, "components"), "utf-8", (err, data) => {
   for (let i = 0; i < data.length; i++) {
     readFile(path.join(__dirname, "components", data[i]), (err, dataart) => {
-      dataart;
+      if (i == dataart.length - 1) {
+        dataTemplate.on("data", (chunk) => {
+          let template = chunk;
 
-      dataTemplate.on("data", (chunk) => {
-        let template = chunk;
-        let index = path.basename(data[i]).lastIndexOf(".");
+          let index = path.basename(data[i]).lastIndexOf(".");
 
-        let nameWithoutExtension = path.basename(data[i]).slice(0, index);
+          let nameWithoutExtension = path.basename(data[i]).slice(0, index);
 
-        template = template.replace(`{{${nameWithoutExtension}}}`, dataart);
+          template = template.replace(`{{${nameWithoutExtension}}}`, dataart);
 
-        if (i == data.length - 1) {
           writeFile(
             path.join(__dirname, "project-dist", "index.html"),
             template,
             (err) => {}
           );
-        }
-      });
+        });
+      }
     });
   }
 });
@@ -90,8 +91,6 @@ mkdir(
 );
 readdir(path.join(__dirname, "assets"), (err, files) => {
   for (let i = 0; i < files.length; i++) {
-    console.log(files);
-
     mkdir(
       path.join(__dirname, "project-dist", "assets", files[i]),
       { recursive: true },
@@ -101,19 +100,23 @@ readdir(path.join(__dirname, "assets"), (err, files) => {
       path.join(__dirname, "assets", files[i]),
       { withFileTypes: true },
       (err, filedata) => {
-        console.log(filedata);
+        for (let j = 0; j < filedata.length; j++) {
+          readFile(path.join(__dirname, "assets", files[i]), (err, data) => {
+            data = filedata[j].name;
 
-        readFile(path.join(__dirname, "assets", files[i]), (err, data) => {
-          data = filedata[i].name;
-          console.log(data);
-          appendFile(
-            path.join(__dirname, "project-dist", "assets", files[i]),
-            data,
-            (err) => {
-              console.log(data);
-            }
-          );
-        });
+            copyFile(
+              path.join(__dirname, "assets", files[i], data),
+              path.join(__dirname, "project-dist", "assets", files[i], data),
+
+              (err) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+              }
+            );
+          });
+        }
       }
     );
   }
