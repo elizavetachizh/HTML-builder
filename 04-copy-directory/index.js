@@ -4,8 +4,6 @@ fs.mkdir(path.join(__dirname, "files-copy"), { recursive: true }, (err) => {
   if (err) {
     console.error(err);
     return;
-  } else {
-    console.log("Данная папка существует");
   }
 });
 fs.readdir(path.join(__dirname, "files"), (err, files) => {

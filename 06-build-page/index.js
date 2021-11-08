@@ -27,23 +27,22 @@ let dataTemplate = createReadStream(
 readdir(path.join(__dirname, "components"), "utf-8", (err, data) => {
   for (let i = 0; i < data.length; i++) {
     readFile(path.join(__dirname, "components", data[i]), (err, dataart) => {
-      if (i == dataart.length - 1) {
-        dataTemplate.on("data", (chunk) => {
-          let template = chunk;
+      dataTemplate.on("data", (chunk) => {
+        let template = chunk;
 
-          let index = path.basename(data[i]).lastIndexOf(".");
+        let index = path.basename(data[i]).lastIndexOf(".");
 
-          let nameWithoutExtension = path.basename(data[i]).slice(0, index);
+        let nameWithoutExtension = path.basename(data[i]).slice(0, index);
 
-          template = template.replace(`{{${nameWithoutExtension}}}`, dataart);
-
+        template = template.replace(`{{${nameWithoutExtension}}}`, dataart);
+        if (i == dataart.length - 1) {
           writeFile(
             path.join(__dirname, "project-dist", "index.html"),
             template,
             (err) => {}
           );
-        });
-      }
+        }
+      });
     });
   }
 });
