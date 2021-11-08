@@ -26,12 +26,16 @@ readdir(path.join(__dirname, "components"), "utf-8", (err, data) => {
   for (let i = 0; i < data.length; i++) {
     readFile(path.join(__dirname, "components", data[i]), (err, dataart) => {
       dataart;
+
       dataTemplate.on("data", (chunk) => {
         let template = chunk;
         let index = path.basename(data[i]).lastIndexOf(".");
+
         let nameWithoutExtension = path.basename(data[i]).slice(0, index);
+
         template = template.replace(`{{${nameWithoutExtension}}}`, dataart);
-        if (i === data.length - 1) {
+
+        if (i == data.length - 1) {
           writeFile(
             path.join(__dirname, "project-dist", "index.html"),
             template,
@@ -82,28 +86,34 @@ readdir(
 mkdir(
   path.join(__dirname, "project-dist", "assets"),
   { recursive: true },
-  (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-  }
+  (err) => {}
 );
 readdir(path.join(__dirname, "assets"), (err, files) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
   for (let i = 0; i < files.length; i++) {
-    copyFile(
-      path.join(__dirname, "assets", files[i]),
+    console.log(files);
+
+    mkdir(
       path.join(__dirname, "project-dist", "assets", files[i]),
-      (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
+      { recursive: true },
+      (err) => {}
+    );
+    readdir(
+      path.join(__dirname, "assets", files[i]),
+      { withFileTypes: true },
+      (err, filedata) => {
+        console.log(filedata);
+
+        readFile(path.join(__dirname, "assets", files[i]), (err, data) => {
+          data = filedata[i].name;
+          console.log(data);
+          appendFile(
+            path.join(__dirname, "project-dist", "assets", files[i]),
+            data,
+            (err) => {
+              console.log(data);
+            }
+          );
+        });
       }
     );
   }
