@@ -13,7 +13,7 @@ fs.readdir(path.join(__dirname, "files"), (err, files) => {
     console.error(err);
     return;
   }
-  console.log(files);
+
   for (let i = 0; i < files.length; i++) {
     fs.copyFile(
       path.join(__dirname, "files", files[i]),
