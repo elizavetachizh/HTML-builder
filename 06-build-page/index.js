@@ -28,14 +28,11 @@ mkdir(
       template += chunk;
     });
     dataTemplate.on("end", () => {
-      let arr = template.match(/{{([a-z]+)}}/gim);
-
       readdir(path.join(__dirname, "components"), "utf-8", (err, data) => {
         for (let i = 0; i < data.length; i++) {
           readFile(
             path.join(__dirname, "components", data[i]),
             (err, dataart) => {
-              let arr = template.match(/{{([a-z]+)}}/gim);
               for (let j = 0; j < template.length; j++) {
                 let index = path.basename(data[i]).lastIndexOf(".");
                 let nameWithoutExtension = path
