@@ -1,30 +1,38 @@
 const fs = require("fs");
-const path = require("path");
-const { stat } = require("fs");
+path = require("path");
+
+// read directory 'secret-folder'
 fs.readdir(
-  path.join(__dirname, "secret-folder"),
+  path.join(__dirname, "/secret-folder"),
   { withFileTypes: true },
   (err, files) => {
-    console.log("\nCurrent directory files:");
-    if (err) {
-      //     console.log(err);
-    } else {
-      files.forEach((file) => {
-        if (file.isFile()) {
-          stat(
-            path.join(__dirname, "secret-folder", file.name),
-            function (err, stat) {
-              // console.log(err, stat);
-              console.log(
-                `${path.basename(
-                  file.name,
-                  path.extname(file.name)
-                )} - ${path.extname(file.name)} - ${stat.size / 1000}kb`
-              );
-            }
-          );
-        }
-      });
+    // getting data the "secret folder" data directory
+    if (err) throw err;
+    for (let i = 0; i < files.length; i++) {
+      // 4.check object - it is file?
+      if (files[i].isFile()) {
+        fs.stat(
+          path.join(__dirname, "/secret-folder/", files[i].name),
+          (err, stats) => {
+            if (err) throw err;
+
+            let index = path.basename(files[i].name).lastIndexOf(".");
+
+            let nameWithoutExtension = path
+              .extname(files[i].name)
+
+              .slice(1, index);
+
+            // output data in console
+            console.log(
+              `${path.basename(
+                files[i].name,
+                path.extname(files[i].name)
+              )} - ${nameWithoutExtension} - ${stats.size} B`
+            );
+          }
+        );
+      }
     }
   }
 );
