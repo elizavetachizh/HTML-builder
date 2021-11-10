@@ -16,12 +16,19 @@ fs.readdir(
           (err, stats) => {
             if (err) throw err;
 
+            let index = path.basename(files[i].name).lastIndexOf(".");
+
+            let nameWithoutExtension = path
+              .extname(files[i].name)
+
+              .slice(1, index);
+
             // output data in console
             console.log(
               `${path.basename(
                 files[i].name,
                 path.extname(files[i].name)
-              )}\t ${path.extname(files[i].name)}\t ${stats.size} B`
+              )} - ${nameWithoutExtension} - ${stats.size} B`
             );
           }
         );
