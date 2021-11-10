@@ -2,7 +2,7 @@
 
 const { readdir, writeFile, readFile, appendFile } = require("fs");
 const path = require("path");
-writeFile(path.join(__dirname, "bundle.css"), "", (err) => {
+writeFile(path.join(__dirname, "project-dist", "bundle.css"), "", (err) => {
   if (err) {
     console.error(err);
   }
@@ -22,14 +22,17 @@ readdir(
             console.error(err);
           }
           //используем appendFile что бы файл не перезаписывался(), а именноЗАПИСЫВАЛСЯ, то есть дополнялся данными.
-          appendFile(path.join(__dirname, "bundle.css"), data, (err) => {
-            if (err) console.error(err);
+          appendFile(
+            path.join(__dirname, "project-dist", "bundle.css"),
+            data,
+            (err) => {
+              if (err) console.error(err);
 
-            console.log("файл успешно добавлен");
-          });
+              console.log("файл успешно добавлен");
+            }
+          );
         });
       }
     }
   }
 );
-

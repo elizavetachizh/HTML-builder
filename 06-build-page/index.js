@@ -9,6 +9,13 @@ const {
   copyFile,
 } = require("fs");
 
+let dataTemplate = createReadStream(
+  path.join(__dirname, "template.html"),
+  "utf-8"
+);
+
+let template = "";
+
 mkdir(
   path.join(__dirname, "project-dist"),
   { recursive: true },
@@ -17,35 +24,43 @@ mkdir(
       console.error(err);
       return;
     }
-  }
-);
+    dataTemplate.on("data", (chunk) => {
+      template += chunk;
+    });
+    dataTemplate.on("end", () => {
+      let arr = template.match(/{{([a-z]+)}}/gim);
 
-let dataTemplate = createReadStream(
-  path.join(__dirname, "template.html"),
-  "utf-8"
-);
-readdir(path.join(__dirname, "components"), "utf-8", (err, data) => {
-  for (let i = 0; i < data.length; i++) {
-    readFile(path.join(__dirname, "components", data[i]), (err, dataart) => {
-      dataTemplate.on("data", (chunk) => {
-        let template = chunk;
+      readdir(path.join(__dirname, "components"), "utf-8", (err, data) => {
+        for (let i = 0; i < data.length; i++) {
+          readFile(
+            path.join(__dirname, "components", data[i]),
+            (err, dataart) => {
+              let arr = template.match(/{{([a-z]+)}}/gim);
+              for (let j = 0; j < template.length; j++) {
+                let index = path.basename(data[i]).lastIndexOf(".");
+                let nameWithoutExtension = path
+                  .basename(data[i])
+                  .slice(0, index);
 
-        let index = path.basename(data[i]).lastIndexOf(".");
+                template = template.replace(
+                  `{{${nameWithoutExtension}}}`,
+                  dataart
+                );
 
-        let nameWithoutExtension = path.basename(data[i]).slice(0, index);
-
-        template = template.replace(`{{${nameWithoutExtension}}}`, dataart);
-        if (i == dataart.length - 1) {
-          writeFile(
-            path.join(__dirname, "project-dist", "index.html"),
-            template,
-            (err) => {}
+                writeFile(
+                  path.join(__dirname, "project-dist", "index.html"),
+                  template,
+                  (err) => {}
+                );
+                j++;
+              }
+            }
           );
         }
       });
     });
   }
-});
+);
 
 //третий пункт
 
